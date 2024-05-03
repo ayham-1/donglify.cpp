@@ -3,7 +3,9 @@ project('donglify', 'cpp',
   default_options : ['warning_level=3',
                      'cpp_std=c++23'])
 
+incdir = include_directories('include/')
+
 exe = executable('donglify', 'src/donglify.cpp',
-  install : true)
+  install : true, include_directories: incdir)
 
 test('basic', exe)

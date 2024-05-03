@@ -4,6 +4,8 @@
 #include <string.h>
 #include <vector>
 
+#include "donglify/ansi.hpp"
+
 #if defined(_WIN32) || defined(WIN32)
 
 void main() { std::cout << "haha too bad you are running windows!!!!\nno security for you hehe" << endl; }
@@ -34,9 +36,11 @@ std::vector<CommandStruct> donglify_cmds = {{"status", NULL},  {"list", NULL},  
 void cmd_list()
 {
 	std::cout << "available commands: ";
+	std::cout << ANSI_COLOR_FG_LIGHT_CYAN << ANSI_DIM;
 	for (auto cmd : donglify_cmds) {
 		std::cout << cmd.name << " ";
 	}
+	std::cout << ANSI_COLOR_FG_DEFAULT << ANSI_RESET_ALL;
 	std::cout << std::endl;
 }
 
@@ -58,9 +62,11 @@ int main(int argc, char ** argv)
 	std::cout << "Welcome to donglify!" << std::endl;
 
 	/* TODO(ayham-1): locate_and_load_config() */
+	std::cout << "\e[31mHello World\e[0m" << std::endl;
 
 	std::string input;
-	while (std::cout << "donglify> " && std::getline(std::cin, input)) {
+	while (std::cout << ANSI_COLOR_FG_DARK_GRAY << "donglify> " << ANSI_COLOR_FG_DEFAULT &&
+	       std::getline(std::cin, input)) {
 		for (auto cmd : donglify_cmds) {
 			if (cmd.name == input) {
 				if (!cmd.cmd_fn()) {
