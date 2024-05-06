@@ -20,7 +20,7 @@ void sigint_handler(sig_atomic_t s)
 {
 	(void)s;
 
-	std::cout << "Farewell, Traveller." << std::endl;
+	std::cout << std::endl << "Farewell, Traveller." << std::endl;
 	exit(0);
 }
 
@@ -33,7 +33,7 @@ std::vector<CommandStruct> donglify_cmds = {{"status", NULL},  {"list", NULL},  
 					    {"unmount", NULL}, {"add", NULL},      {"reinstall", NULL},
 					    {"update", NULL},  {"iso list", NULL}, {"iso templates", NULL}};
 
-void cmd_list()
+void cmd_help()
 {
 	std::cout << "available commands: ";
 	std::cout << ANSI_COLOR_FG_LIGHT_CYAN << ANSI_DIM;
@@ -62,8 +62,8 @@ int main(int argc, char ** argv)
 	std::cout << "Welcome to donglify!" << std::endl;
 
 	/* TODO(ayham-1): locate_and_load_config() */
-	std::cout << "\e[31mHello World\e[0m" << std::endl;
 
+	cmd_help();
 	std::string input;
 	while (std::cout << ANSI_COLOR_FG_DARK_GRAY << "donglify> " << ANSI_COLOR_FG_DEFAULT &&
 	       std::getline(std::cin, input)) {
@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
 		}
 
 		std::cout << "Command not found." << std::endl;
-		cmd_list();
+		cmd_help();
 	}
 
 	system("lsblk");
