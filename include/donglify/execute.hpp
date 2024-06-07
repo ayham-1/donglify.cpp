@@ -3,6 +3,6 @@
 
 #include <string>
 
-bool execute(std::string cmd, std::string desc = "", bool dry_run = false);
+int execute(std::string cmd, std::string desc = "", bool ask = true, bool needed = true);
 
 #endif

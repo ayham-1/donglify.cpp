@@ -1,6 +1,7 @@
 #ifndef ANSI_HPP
 #define ANSI_HPP
 
+#include <iostream>
 #include <string>
 
 /* formatting: set */
@@ -58,5 +59,15 @@ const std::string ANSI_COLOR_BG_LIGHT_BLUE = "\033[104m";
 const std::string ANSI_COLOR_BG_LIGHT_MAGENTA = "\033[105m";
 const std::string ANSI_COLOR_BG_LIGHT_CYAN = "\033[106m";
 const std::string ANSI_COLOR_BG_WHITE = "\033[107m";
+
+#define reset_all_ansi() std::cout << ANSI_COLOR_BG_DEFAULT << ANSI_COLOR_FG_DEFAULT << ANSI_RESET_ALL << std::endl;
+
+#define print_yes_or_no(condition)                                                                                     \
+	if (condition)                                                                                                 \
+		std::cout << ANSI_COLOR_FG_GREEN << ANSI_BLINK;                                                        \
+	else                                                                                                           \
+		std::cout << ANSI_COLOR_FG_RED << ANSI_BLINK;                                                          \
+	std::cout << (needed ? "Yes" : "No") << std::endl;                                                             \
+	reset_all_ansi()
 
 #endif

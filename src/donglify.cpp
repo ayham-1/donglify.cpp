@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "donglify/ansi.hpp"
+#include "donglify/execute.hpp"
 
 #if defined(_WIN32) || defined(WIN32)
 
@@ -29,9 +30,9 @@ struct CommandStruct {
 	bool (*cmd_fn)(/*params*/);
 };
 
-std::vector<CommandStruct> donglify_cmds = {{"status", NULL},  {"list", NULL},     {"mount", NULL},
-					    {"unmount", NULL}, {"add", NULL},      {"reinstall", NULL},
-					    {"update", NULL},  {"iso list", NULL}, {"iso templates", NULL}};
+std::vector<CommandStruct> donglify_cmds = {
+    {"status", NULL},    {"list", NULL},   {"mount", NULL},    {"unmount", NULL},       {"add", NULL},
+    {"reinstall", NULL}, {"update", NULL}, {"iso list", NULL}, {"iso templates", NULL}, {"exit", NULL}};
 
 void cmd_help()
 {
@@ -47,7 +48,10 @@ void cmd_help()
 int main(int argc, char ** argv)
 {
 	std::vector<std::string> args(argv, argv + argc);
-	if (args[1] == "init" && args[2].length() == strlen("/dev/xyz")) {
+	if (argc == 1) {
+		std::cout << USAGE_STR << std::endl;
+		exit(127);
+	} else if (args[1] == "init" && args[2].length() == strlen("/dev/xyz")) {
 		// dongle init partition
 		std::cout << "initializing your dongle" << std::endl;
 	} else if (args[1] == "load" && args[2].length() >= strlen("/dev/xyz0")) {
@@ -65,24 +69,38 @@ int main(int argc, char ** argv)
 
 	cmd_help();
 	std::string input;
-	while (std::cout << ANSI_COLOR_FG_DARK_GRAY << "donglify> " << ANSI_COLOR_FG_DEFAULT &&
-	       std::getline(std::cin, input)) {
+	while (true) {
+		std::cout << std::endl << ANSI_COLOR_FG_DARK_GRAY << "donglify> " << ANSI_COLOR_FG_DEFAULT;
+		if (!std::getline(std::cin, input))
+			raise(SIGINT);
+
+		if (input == "exit")
+			raise(SIGINT);
+
+		execute("sudo lsblk", "", true, false);
+
+		bool command_not_found = false;
 		for (auto cmd : donglify_cmds) {
 			if (cmd.name == input) {
-				if (!cmd.cmd_fn()) {
+				if (!cmd.cmd_fn) {
+					std::cout << std::endl;
+					std::cout << "Command is not implemented yet!" << std::endl;
+				} else if (!cmd.cmd_fn || !cmd.cmd_fn()) {
+					std::cout << std::endl;
 					std::cout << "Execution of the previous command failed, exiting..."
 						  << std::endl;
 					exit(1);
-				} else
-					continue;
+				} else {
+					command_not_found = true;
+					break;
+				}
 			}
 		}
 
-		std::cout << "Command not found." << std::endl;
-		cmd_help();
+		if (command_not_found) {
+			cmd_help();
+		}
 	}
-
-	system("lsblk");
 	return 0;
 }
 
