@@ -125,7 +125,7 @@ bool cmd_initialize_partitions(std::string dongle_path)
 	desc = "encrypt dongle's /boot partition, user will be asked for passphrase automatically";
 	execute(cmd, desc);
 
-	unlock_disk(dongle_path + "2", "dongleboot");
+	crypt_unlock_disk(dongle_path + "2", "dongleboot");
 
 	cmd = "mkfs.ext4 /dev/mapper/dongleboot";
 	desc = "format dongle's /boot partition as ext4";
@@ -139,13 +139,19 @@ bool cmd_initialize_partitions(std::string dongle_path)
 	desc = "encrypt dongle's persistent partition, user will be asked for passphrase automatically";
 	execute(cmd, desc);
 
-	unlock_disk(dongle_path + "4", "donglepersist");
+	crypt_unlock_disk(dongle_path + "4", "donglepersist");
 
 	cmd = "mkfs.ext4 /dev/mapper/donglepersist";
 	desc = "format dongle's persistent partition";
 	execute(cmd, desc);
 
 	/* TODO(ayham-1): dongle.ini */
+	dongle_config_ini["dongle"]["efi_uuid"] = get_uuid_by_disk(dongle_path + "1");
+	dongle_config_ini["dongle"]["locked_boot_uuid"] = get_uuid_by_disk(dongle_path + "2");
+	dongle_config_ini["dongle"]["unlocked_boot_uuid"] = get_uuid_by_disk("/dev/mapper/dongleboot");
+	dongle_config_ini["dongle"]["part_iso_uuid"] = get_uuid_by_disk(dongle_path + "3");
+
+	dongle_mount_all();
 
 	// # grub-install
 	//     dongle_mount_all()

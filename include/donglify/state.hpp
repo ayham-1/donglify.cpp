@@ -3,8 +3,6 @@
 
 #include "vendor/inicpp.h"
 
-ini::IniFile donglify_config_ini;
-
-ini::IniFile get_config();
+extern ini::IniFile dongle_config_ini;
 
 #endif
