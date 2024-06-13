@@ -60,7 +60,7 @@ const std::string ANSI_COLOR_BG_LIGHT_MAGENTA = "\033[105m";
 const std::string ANSI_COLOR_BG_LIGHT_CYAN = "\033[106m";
 const std::string ANSI_COLOR_BG_WHITE = "\033[107m";
 
-#define reset_all_ansi() std::cout << ANSI_COLOR_BG_DEFAULT << ANSI_COLOR_FG_DEFAULT << ANSI_RESET_ALL << std::endl;
+#define reset_all_ansi() std::cout << ANSI_COLOR_BG_DEFAULT << ANSI_COLOR_FG_DEFAULT << ANSI_RESET_ALL;
 
 #define print_yes_or_no(condition)                                                                                     \
 	if (condition)                                                                                                 \
@@ -69,5 +69,12 @@ const std::string ANSI_COLOR_BG_WHITE = "\033[107m";
 		std::cout << ANSI_COLOR_FG_RED << ANSI_BLINK;                                                          \
 	std::cout << (needed ? "Yes" : "No") << std::endl;                                                             \
 	reset_all_ansi()
+
+#define good(str) std::cout << ANSI_COLOR_FG_GREEN << str << ANSI_COLOR_FG_DEFAULT << std::endl;
+;
+
+#define start_new_line() std::cout << ANSI_COLOR_FG_BLUE << "[donglify] " << ANSI_COLOR_FG_DEFAULT
+#define start_warning_line() std::cout << ANSI_COLOR_FG_YELLOW << "[warning] " << ANSI_COLOR_FG_DEFAULT
+#define start_error_line() std::cout << ANSI_COLOR_FG_RED << "[error] " << ANSI_COLOR_FG_DEFAULT
 
 #endif

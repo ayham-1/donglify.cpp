@@ -4,4 +4,4 @@ rm -fr builddir/
 meson setup builddir
 meson compile -C builddir
 
-./builddir/donglify $@
+sudo ./builddir/donglify $@

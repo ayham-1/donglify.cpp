@@ -2,10 +2,13 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <vector>
 
 #include "donglify/ansi.hpp"
 #include "donglify/execute.hpp"
+
+#include "donglify/cmds/initialize_partitions.hpp"
 
 #if defined(_WIN32) || defined(WIN32)
 
@@ -47,6 +50,12 @@ void cmd_help()
 
 int main(int argc, char ** argv)
 {
+	if (geteuid() != 0) {
+		std::cout << "This program does big boy stuff, and therefore it requires privileged permissions."
+			  << std::endl;
+		std::cout << "-- chad program" << std::endl;
+		exit(1);
+	}
 	std::vector<std::string> args(argv, argv + argc);
 	if (argc == 1) {
 		std::cout << USAGE_STR << std::endl;
@@ -54,6 +63,8 @@ int main(int argc, char ** argv)
 	} else if (args[1] == "init" && args[2].length() == strlen("/dev/xyz")) {
 		// dongle init partition
 		std::cout << "initializing your dongle" << std::endl;
+		/* TODO(ayham-1): initialize_partiions(path) */
+		cmd_initialize_partitions(args[2]);
 	} else if (args[1] == "load" && args[2].length() >= strlen("/dev/xyz0")) {
 		// dongle load partition
 		std::cout << "loading your dongle" << std::endl;
@@ -77,7 +88,7 @@ int main(int argc, char ** argv)
 		if (input == "exit")
 			raise(SIGINT);
 
-		execute("sudo lsblk", "", true, false);
+		std::cout << execute("sudo lsblk", "", true, false) << std::endl;
 
 		bool command_not_found = false;
 		for (auto cmd : donglify_cmds) {

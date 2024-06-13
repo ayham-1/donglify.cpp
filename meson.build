@@ -5,7 +5,11 @@ project('donglify', 'cpp',
 
 incdir = include_directories('include/')
 
-exe = executable('donglify', 'src/donglify.cpp', 'src/execute.cpp',
+exe = executable('donglify', 
+  'src/donglify.cpp',
+  'src/execute.cpp',
+  'src/disk.cpp',
+  'src/cmds/initialize_partitions.cpp',
   install : true, include_directories: incdir)
 
 test('basic', exe)
